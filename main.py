@@ -11,14 +11,17 @@ headers["Cookie"] = "_utma=74197771.287559364.1638620886.1638621056.1638621056.1
 resp = requests.get(url, headers=headers)
 models = json.loads(resp.content)['models']
 submission_ids = [model['id'] for model in models]
-
+print(submission_ids)
 subs = {}
+
 for id in submission_ids:
     url2 = f'https://www.hackerrank.com/rest/contests/selftest-py/submissions/{id}'
     resp = requests.get(url2, headers=headers)
     model = json.loads(resp.content)['model']
-    if model['hacker_id'] not in subs:
-        subs[model['hacker_id']] = []
-    subs[model['hacker_id']].append(model['code'])
+    key = model['hacker_username'] if 'hacker_username' in model.keys() else model['hacker_id']
+    if key not in subs:
+        subs[key] = []
+    subs[key].append(model['code'])
 
 print(subs)
+
